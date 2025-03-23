@@ -58,7 +58,7 @@ function App() {
     formData.append("image", file);
 
     try {
-      const response = await fetch("http://localhost:5000/upload", {
+      const response = await fetch("https://composed-apogee-454521-u8.nn.r.appspot.com/upload", {
         method: "POST",
         body: formData,
       });
