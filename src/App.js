@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { db, collection, addDoc, getDocs } from "./firebase"; // Import Firebase
+import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+import { db, collection, addDoc, getDocs } from "./firebase";
 
 const mapContainerStyle = {
   width: "100%",
@@ -12,12 +12,18 @@ const defaultCenter = {
   lng: -122.3321,
 };
 
+const statusOptions = ["Full", "Needs Cleaning", "Broken", "Other"];
+
 function App() {
   const [userLocation, setUserLocation] = useState(null);
-  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("");
+  const [otherStatus, setOtherStatus] = useState("");
   const [reports, setReports] = useState([]);
+  const [filter, setFilter] = useState("All");
+  const [image, setImage] = useState(null);
+  const [selectedReport, setSelectedReport] = useState(null);
 
-  // Fetch reports from Firebase
+
   useEffect(() => {
     const fetchReports = async () => {
       const querySnapshot = await getDocs(collection(db, "reports"));
@@ -27,7 +33,6 @@ function App() {
     fetchReports();
   }, []);
 
-  // Get user's current location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -39,60 +44,116 @@ function App() {
         },
         () => {
           alert("Location access denied. Using default location.");
-          setUserLocation(null);
+          setUserLocation(defaultCenter);
         }
       );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-      setUserLocation(null);
     }
   }, []);
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch("http://localhost:5000/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      setImage(data.imageUrl); // Store image URL
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userLocation || !description) {
-      alert("Please allow location access and enter a description!");
+    if (!userLocation || !status) {
+      alert("Please allow location access and select a bin status!");
       return;
     }
 
-    // Save report to Firebase
+    if (status === "Other" && !otherStatus) {
+      alert("Please enter a description for 'Other'.");
+      return;
+    }
+
     const newReport = {
       lat: userLocation.lat,
       lng: userLocation.lng,
-      description,
+      status,
+      description: status === "Other" ? otherStatus : "",
+      imageUrl: image || "", // Store uploaded image URL
     };
+
     await addDoc(collection(db, "reports"), newReport);
     setReports([...reports, newReport]);
-
-    // Clear input field
-    setDescription("");
+    setStatus("");
+    setOtherStatus("");
   };
+
+  const filteredReports = filter === "All" ? reports : reports.filter(report => report.status === filter);
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
       <h1>Smart Waste Management System</h1>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="Description (e.g., Overflowing)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          style={{ marginRight: "10px", padding: "5px" }}
-        />
-        <button type="submit" style={{ padding: "5px 10px" }}>Report Bin</button>
+        <select value={status} onChange={(e) => setStatus(e.target.value)} required>
+          <option value="">Select Bin Status</option>
+          {statusOptions.map((option, index) => (
+            <option key={index} value={option}>{option}</option>
+          ))}
+        </select>
+        {status === "Other" && (
+          <input
+            type="text"
+            placeholder="Enter description"
+            value={otherStatus}
+            onChange={(e) => setOtherStatus(e.target.value)}
+            required
+          />
+        )}
+        <input type="file" accept="image/*" onChange={handleImageUpload} />
+        <button type="submit" style={{ padding: "5px 10px", marginLeft: "10px" }}>Report Bin</button>
       </form>
 
-      <p><strong>Your location will be used as the bin location.</strong></p>
+      <label>Filter Bins: </label>
+      <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <option value="All">All</option>
+        {statusOptions.map((option, index) => (
+          <option key={index} value={option}>{option}</option>
+        ))}
+      </select>
 
-      {/* Google Map */}
       <LoadScript googleMapsApiKey="AIzaSyDd4OlYzlXaH0ct048tB-Yh7DLz1IckI2c">
-        <GoogleMap mapContainerStyle={mapContainerStyle} center={userLocation || defaultCenter} zoom={12}>
-          {reports.map((report, index) => (
-            <Marker key={index} position={{ lat: report.lat, lng: report.lng }} title={report.description} />
+        <GoogleMap mapContainerStyle={mapContainerStyle} center={userLocation} zoom={12}>
+          {filteredReports.map((report, index) => (
+            <Marker 
+            key={index} 
+            position={{ lat: report.lat, lng: report.lng }} 
+            title={report.status === "Other" ? `Other: ${report.description}` : report.status}
+            onClick={() => {
+              if (report.imageUrl) {
+                window.open(report.imageUrl, "_blank"); // Opens image in a new tab
+              } else {
+                alert("No image available for this bin.");
+              }
+            }}
+          />
           ))}
+          {selectedReport && (
+            <InfoWindow position={{ lat: selectedReport.lat, lng: selectedReport.lng }} onCloseClick={() => setSelectedReport(null)}>
+              <div>
+                <h4>{selectedReport.status}</h4>
+                {selectedReport.imageUrl && <img src={selectedReport.imageUrl} alt="Bin" style={{ width: "100px" }} />}
+              </div>
+            </InfoWindow>
+          )}
         </GoogleMap>
       </LoadScript>
     </div>
