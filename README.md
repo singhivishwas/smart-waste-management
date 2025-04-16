@@ -1,74 +1,122 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 🧼 CleanFlow – Smart Waste Management System
 
-## Available Scripts
+CleanFlow is a modern cloud-based Smart Waste Management System that empowers citizens to report overflowing or damaged garbage bins in real time. The system integrates React, Firebase, Google Maps, and Google Cloud to provide a clean, user-friendly reporting experience and a secure admin panel for monitoring.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 Live Demo
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+🌐 Hosted Frontend: (https://smartwastesystem-c0932646.web.app/)
+🛠️ Backend Hosted On: Google Cloud App Engine
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 📦 Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🧍 User Side
+- 📍 Auto-detect current location
+- 📝 Report bin issues with predefined or custom status
+- 📷 Upload a bin image (required)
+- 🗺️ View reported bins as image markers on Google Map
+- 🧭 Address auto-generated using reverse geocoding
 
-### `npm run build`
+### 👨‍💼 Admin Panel
+- 🔐 Google login restricted to a single admin
+- 🧾 Table listing all reports
+- 🎯 Filter, sort, and search reports by status, address, or time
+- 🖼️ Image popup with zoom and ESC-to-close
+- 🟩 Status badges (color-coded for quick scan)
+- ⏰ Time and date tracking for each report
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ Technologies Used
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+| Layer       | Technologies |
+|-------------|--------------|
+| **Frontend** | React.js, HTML, CSS, JS |
+| **Backend**  | Node.js, Express.js |
+| **Database** | Firebase Firestore |
+| **Hosting**  | Firebase Hosting |
+| **Authentication** | Firebase Authentication with Google Sign-In |
+| **Maps & Geolocation** | Google Maps API, Geocoding API |
+| **File Upload** | Multer + Google Cloud Storage |
+| **Deployment** | Google Cloud App Engine |
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📁 Project Structure
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+CleanFlow/
+├── backend/               # Node.js Express server
+│   ├── upload.js
+│   └── composed-xxx.json  # Service account key (DO NOT UPLOAD TO GITHUB)
+├── public/
+│   └── index.html
+├── src/
+│   ├── App.js             # Route management
+│   ├── HomePage.js        # Main UI for users
+│   ├── AdminPanel.js      # Admin dashboard
+│   ├── firebase.js        # Firebase config
+│   └── assets/            # Logos, icons
+├── firebase.json          # Hosting configuration
+├── .firebaserc            # Firebase project ID
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📦 Setup & Run Locally
 
-## Learn More
+### 🔧 Prerequisites
+- Node.js and npm
+- Firebase CLI (`npm install -g firebase-tools`)
+- Google Cloud SDK (for backend deployment)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 🚀 Frontend (React)
+```bash
+cd cleanflow/
+npm install
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 🔧 Backend (Node.js + Express)
+```bash
+cd backend/
+npm install
+node upload.js
+```
 
-### Code Splitting
+### 🌍 Deploy Frontend to Firebase
+```bash
+npm run build
+firebase deploy
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🔐 Admin Access
+Only 1 verified Google account (`vishwassinghi2001@gmail.com`) is allowed to access the admin dashboard.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📚 License
 
-### Advanced Configuration
+This project is licensed under the MIT License – see the LICENSE file for details.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 👥 Team Members
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Vishwas Singhi (Team Lead) – c0932646  
+- Ajayveer Singh – c0929616  
+- Archit Parikh – c0932379  
+- SaiTeja – c0931368
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# smart-waste-management
->>>>>>> f6ec8c2438d3d546640d0ec7b4bec6e0bcf8a524
+## 📎 GitHub Repository
+
+🔗 [https://github.com/singhivishwas/smart-waste-management.git](https://github.com/singhivishwas/smart-waste-management.git)

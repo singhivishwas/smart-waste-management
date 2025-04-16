@@ -16,7 +16,7 @@ const storage = new Storage({
   keyFilename: path.join(__dirname, "composed-apogee-454521-u8-52114df70671.json"), // Ensure this file is inside 'backend/'
 });
 
-const bucketName = "smartwastesystem"; // Replace with your bucket name
+const bucketName = "smartwastesystem"; 
 const bucket = storage.bucket(bucketName);
 
 // Configure multer for file uploads
